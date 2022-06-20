@@ -1,11 +1,11 @@
-import praw
+import asyncpraw
 from config import CLIENT_ID, CLIENT_SECRET, USER_AGENT, USERNAME
 from database.database import Database
 import asyncio
 
 db = Database()
 
-reddit = praw.Reddit(
+reddit = asyncpraw.Reddit(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
     user_agent=USER_AGENT,
@@ -14,11 +14,11 @@ reddit = praw.Reddit(
 
 subreddit = reddit.subreddit("memes")
 
-def get_meme() -> str:
+async def get_meme() -> str:
     """GET MEME FROM REDDIT"""
 
-    subreddit = reddit.subreddit("memes")
-    meme = subreddit.random()
+    subreddit = await reddit.subreddit("memes")
+    meme = await subreddit.random()
 
     return meme.url
 
@@ -27,8 +27,17 @@ async def upload_meme_to_db(meme:str) -> None:
     await db.init_memes_db(meme)
     return
 
-for _ in range(15):
-    meme = get_meme()
-    asyncio.run(upload_meme_to_db(meme))
+async def start():
+    print("Start!")
+    for i in range(15):
+        print(i)
+        try:
+            meme = await get_meme()
+            await upload_meme_to_db(meme)
+        except:
+            break
 
+loop = asyncio.get_event_loop()
+loop.run_until_complete(start())
+loop.stop()
 print("Done!")
