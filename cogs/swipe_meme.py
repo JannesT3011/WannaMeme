@@ -44,7 +44,7 @@ class ButtonsView(View):
             meme = SwipeMemes(self.bot, self.ctx).load_meme()
         self.already_swiped.append(meme)
 
-        await interaction.response.edit_message(embed=discord.Embed(title=meme["name"] + str(len(self.already_swiped))).set_image(url=meme["url"]), view=self)
+        await interaction.response.edit_message(embed=discord.Embed(title=meme["name"]).set_image(url=meme["url"]), view=self)
 
     async def on_timeout(self) -> None:
         for item in self.children:
