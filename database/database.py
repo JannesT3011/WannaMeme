@@ -15,10 +15,10 @@ class DbClient:
 
 class Database(DbClient):
     """EXECUTE DATABASE STUFF"""
-    async def init_memes_db(self, memeurl: str):
+    async def init_memes_db(self, memeurl: str, name:str):
         """INIT THE MEMES DB"""
         try:
-            await self.memes_collection.insert_one(memes_db_layout(memeurl))
+            await self.memes_collection.insert_one(memes_db_layout(memeurl, name))
             return
         except:
             raise
@@ -48,9 +48,10 @@ class Database(DbClient):
         except:
             raise
 
-def memes_db_layout(memeurl: str) -> dict:
+def memes_db_layout(memeurl: str, name:str) -> dict:
     """DEFAULT MEMES DB LAYOUT"""
     default_data = {"_id": memeurl,
+                    "name": name,
                     "likes": [],
                     "dislikes": [],
                     "created_at": str(datetime.utcnow()),

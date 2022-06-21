@@ -14,17 +14,18 @@ reddit = asyncpraw.Reddit(
 
 subreddit = reddit.subreddit("memes")
 
-async def get_meme() -> str:
+async def get_meme() -> dict:
     """GET MEME FROM REDDIT"""
 
     subreddit = await reddit.subreddit("memes")
     meme = await subreddit.random()
+    await reddit.close()
 
-    return meme.url
+    return {"url": meme.url, "name": meme.title} # TODO auch den namen!
 
-async def upload_meme_to_db(meme:str) -> None:
+async def upload_meme_to_db(meme:str, name:str) -> None:
     """UPLOAD MEME TO DB"""
-    await db.init_memes_db(meme)
+    await db.init_memes_db(meme, name)
     return
 
 async def start():
@@ -33,11 +34,11 @@ async def start():
         print(i)
         try:
             meme = await get_meme()
-            await upload_meme_to_db(meme)
+            await upload_meme_to_db(meme["url"], meme["name"])
         except:
             break
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(start())
-loop.stop()
+loop.run_until_complete(start()) # TODO nicht täglich ausführen, sondern einfach wenn der bot startet und der Bot einem Server join! (200 memes! limit https://stackoverflow.com/questions/67101891/discord-py-meme-command-takes-a-lot-of-time)
+loop()
 print("Done!")

@@ -109,6 +109,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+bin
+include
 
 # Spyder project settings
 .spyderproject
@@ -131,5 +133,9 @@ dmypy.json
 pyvenv.cfg
 Scripts/
 
+# vscode
+.vscode
+
 # config
 config.py
+
